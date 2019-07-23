@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage[leqno]{amsmath}
+\usepackage{tabularx}
+\begin{document}
+\begin{center}
+Neural Network Theory and Applications homework 1 \\
+018080910011 xue hong zhang
+\end{center}
+Q1: Proof. Weight and bias is: 
+\begin{equation}
+\begin{aligned}
+x=
+\begin{pmatrix}
+_{1}\textrm{w}\\ 
+b
+\end{pmatrix},z_q=\begin{pmatrix}
+p_q\\ 
+1
+\end{pmatrix}
+\end{aligned}
+\end{equation}
+The learning rule can be following:
+\begin{equation}
+\begin{aligned}
+n= ~_{1}\textrm{w} ^T p + b = x^T z \\
+x^{new} = x^{old} + \alpha ez
+\end{aligned}
+\end{equation}
+Our goal is to find the upper and lower bound of iteration ‘k’.(let us assume $x_0 = 0$)
+\begin{equation}
+\begin{aligned}
+x_k & = x_{k-1}+\alpha z_{k-1}^{'} = \alpha ( \sum_{i=0}^{k-1} z_{i}^{'})
+\end{aligned}
+\end{equation}
+Because $e \epsilon \{-1,0,1\}$, so here $z^{'} \epsilon \{z_1,...,z_Q,-z_1,...,-z_Q\}$ \\
+We will assume that a weight vector exists that can correctly categorize all Q input vectors. It exists that $ x_* $ is  the  solution  of $x^T z_q > 0 $, let $\delta = min\{x_*^T z_q\}$, q = 1,...,Q
+\begin{equation}
+\begin{aligned}
+x_*^T x_k & = \alpha(x_*^T \sum_{i=0}^{k-1} z_{i}^{'})  > \alpha k \delta 
+\end{aligned}
+\end{equation}
+From the Cauchy-Schwartz inequality
+\begin{equation}
+\begin{aligned}
+||x_*||^2 ||x_k||^2 & \geq (x_*^T x_k)^2  > (\alpha k \delta)^2 
+\end{aligned}
+\end{equation}
+Here $||x||^2 = x^T x$
+\begin{equation}
+\begin{aligned}
+||x_k||^2 & = ||x_{k-1}||^2  + 2 \alpha x^T_{k-1} z^{'}_{k-1} + ||\alpha z^{'}_{k-1}||^2 \\
+& \leq ||x_{k-1}||^2  + ||\alpha z^{'}_{k-1}||^2 = \alpha ^2 \sum_{i=0}^{k-1} ||z^{'}_{i}||^2 \\ 
+& \leq \alpha ^2 \beta k
+\end{aligned}
+\end{equation}
+Where $ \beta $ is $ max\{||z^{'}_{i}||\} $, i = 0,...,k-1, Use (5) and (6), we can get
+\begin{equation*}
+\begin{aligned}
+\beta \alpha ^2 k \geq ||x_k||^2 > \frac{(k \delta)^2}{||x_*||^2} \\
+k < \frac{\beta ||x_*||^2}{\delta ^2}
+\end{aligned}
+\end{equation*}
+Here $\alpha$ require no limits, because k has no lelation with $\alpha$ \\
+
+
+
+\noindent Q2: Input is $X_1$, ouput is $X_M$ \\
+Online way: \\
+(Suppose we have n iterations. steepest descent, using Mean Square Error, the loss function $J(n) = \sum e_i ^2 (n)/2 $ )\\
+\begin{equation*}
+\begin{aligned} 
+u_{kji}(n+1) = u_{kji}(n) - \alpha \frac{\partial J}{\partial u_{kji}}
+\end{aligned}
+\end{equation*}
+$v_{kji}$ and $b_{kji}$ can are similar formats. The k layer's j unit input is
+\begin{equation*}
+\begin{aligned} 
+& n_{kj} = \sum _{i=1} ^{N_{k-1}} (u_{kji} x^2 _{k-1,i} + v_{kji} x_{k-1,i}) + b_{kj} \\
+& x_{kj} = f(n_{kj}) , 
+\frac{\partial n_{kj}}{\partial u_{kji}} = x^2 _{k-1,i} ,
+\frac{\partial n_{kj}}{\partial v_{kji}} = x _{k-1,i} , 
+\frac{\partial n_{kj}}{\partial b_{kji}} = 1 
+\end{aligned}
+\end{equation*}
+we can get the following vectors from the Chain rules
+\begin{equation*}
+\begin{aligned} 
+u_{kj}(n+1) = u_{kj}(n) - \alpha \frac{\partial J}{\partial n_{kj}} x^2 _{k-1} \\
+v_{kj}(n+1) = v_{kj}(n) - \alpha \frac{\partial J}{\partial n_{kj}} x _{k-1} \\
+b_{kj}(n+1) = b_{kj}(n) - \alpha \frac{\partial J}{\partial n_{kj}} 
+\end{aligned}
+\end{equation*}
+Next we calculate $\frac{\partial J}{\partial n_{kji}} $
+\begin{equation*}
+\begin{aligned} 
+\frac{\partial J}{\partial n_{kji}} = \frac{\partial J}{\partial n_{k+1j}}  \frac{\partial n_{k+1j}}{\partial n_{kji}} 
+\end{aligned}
+\end{equation*}
+Where
+\begin{equation*}
+\begin{split} 
+& \frac{\partial n_{k+1ji}}{\partial n_{kji}} = \frac{\partial  \sum _{i=1} ^{N_{k}} (u_{k+1ji} x^2 _{k,i} + v_{k+1ji} x_{k,i}) + b_{k+1j} }{\partial n_{kji}} \\ 
+& = \frac{\partial u_{k+1ji}x^2 _{k,i} + v_{k+1ji} x_{k,i} }{\partial n_{kji}} \\
+& = u_{k+1ji}\frac{\partial f^2 (n_{ki})}{\partial n_{kji}} + v_{k+1ji} \frac{\partial  f(n_{ki}) }{\partial n_{kji}} \\
+& = u_{k+1ji} * 2f(n_{ki}) * f^{'}(n_{ki}) + v_{k+1ji}  * f^{'}(n_{ki}) \\
+& = f^{'}(n_{ki})(2x_{ki}u_{k+1ji} + v_{k+1ji}) \\
+& and ~ f^{'}(n_{ki}) = f(n_{ki}) (1 - f(n_{ki})) = x_{ki} (1 - x_{ki})
+\end{split}
+\end{equation*}
+Writen then as vector, we can get  
+\begin{equation*}
+\begin{split} 
+& \frac{\partial J}{\partial n_{k}} = {f^{'}(n_{k})(2x_{k}u_{k+1} + v_{k+1})}^T \frac{\partial J}{\partial n_{k+1}} \\
+& = {x_{k} (1 - x_{k})(2x_{k}u_{k+1} + v_{k+1})}^T \frac{\partial J}{\partial n_{k+1}} 
+\end{split}
+\end{equation*}
+Batch way: \\
+(Suppose we have n samples in a iteration. Using Mean Square Error, the k layer loss function $J_k = \sum e_ki ^2 /2n , J = \sum _{k=1} ^M J_k $ )\\
+\begin{equation*}
+\begin{split} 
+\Delta u_{jik} = - \alpha \frac{\partial J}{n \partial u_{jik}} = - \frac{\alpha}{n}  \frac{\partial J}{ \partial u_{jik}}
+\end{split}
+\end{equation*}
+$v_{ji}$ and $b_{ji}$ can are similar formats, $\frac{\partial J}{\partial u_{jik}}$ is same with online way's which has been calculated in online way, but $u_{kji}$ , $v_{kji}$ and $b_{kji}$ are only changed after a batch that all n sample are computed.\\\\\\\\
+
+
+
+\noindent Q3: The model is a multilayer perceptron with three layers, init weights are values(near 0) of normal distribution. $training~epochs(iteration) = 300 , batch~size = 128$ (total near 500 samples), acitivation function is RELU.(details in hw1\_3.py) \\
+training time and generalization performance of different hidden units and learning rates:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+hidden unit & learning rate & training time(s) & training accuracy & test accuracy\\
+\hline
+50 & 0.001 & 1.116 & 1 &  0.682 \\
+\hline
+100 & 0.001 & 1.241 & 1 &  0.831 \\
+\hline
+200 & 0.001 & 1.513 & 1 &  0.831 \\
+\hline
+50 & 0.01 & 1.113 & 0.339 &  0.318 \\
+\hline
+100 & 0.01 & 1.277 & 0.339 &  0.318 \\
+\hline
+200 & 0.01 & 1.548 & 0.339 &  0.318 \\
+\hline
+50 & 0.1 & 1.100 & 0.339 &  0.318 \\
+\hline
+200 & 0.1 & 1.538 & 0.339 &  0.318 \\
+\hline
+100 & 0.0005 & 1.219 & 1 &  0.688 \\
+\hline
+200 & 0.0005 & 1.590 & 1 &  0.682 \\
+\hline
+100 & 0.0001 & 1.241 & 0.673 &  0.682 \\
+\hline
+\end{tabular}
+\end{center}
+
+It seem that some models with the parameters(higher learning rate/less hidden unit) are not convergent enough due to bad performance in training set. 
+\end{document}
