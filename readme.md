@@ -1,4 +1,5 @@
-The nerual network cource is taught by teacher Lv. 
+# Neural Network Theory and Applications cource in SJTU
+The Neural Network Theory and Applications cource is taught by teacher Lv. 
 
 Homework | Mentioned topic
 ---|---
